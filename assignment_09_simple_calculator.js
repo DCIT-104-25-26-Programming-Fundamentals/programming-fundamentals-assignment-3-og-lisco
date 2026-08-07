@@ -72,6 +72,106 @@
 //
 // =============================================================================
 // YOUR CODE BELOW — remove the // symbols from the scaffold and fill it in
-// =============================================================================
+const readline = require('readline-sync');
 
+// Global array to store all student object records
+const students = [];
 
+// Helper function to calculate average score
+function getAverage(scores) {
+    if (scores.length === 0) return 0;
+    const sum = scores.reduce((total, score) => total + score, 0);
+    return (sum / scores.length).toFixed(2);
+}
+
+// 1. Function to Add a Student
+function addStudent() {
+    console.log("\n--- Add Student ---");
+    const name = readline.question("Student name: ");
+    const id = Number(readline.question("Student ID: "));
+    const count = Number(readline.question("How many scores? "));
+
+    const scores = [];
+    for (let i = 1; i <= count; i++) {
+        const score = Number(readline.question(`Enter score ${i}: `));
+        scores.push(score);
+    }
+
+    const studentObj = {
+        name: name,
+        id: id,
+        scores: scores
+    };
+
+    students.push(studentObj);
+    console.log(`Student "${name}" added successfully.`);
+}
+
+// 2. Function to Display All Students
+function displayAllStudents() {
+    console.log("\n--- All Students ---");
+    if (students.length === 0) {
+        console.log("No students have been added yet.");
+        return;
+    }
+
+    console.log("\n------------------------------------------------------------------");
+    console.log("ID\t\tName\t\tScores\t\tAverage");
+    console.log("------------------------------------------------------------------");
+    students.forEach(student => {
+        const avg = getAverage(student.scores);
+        console.log(`${student.id}\t${student.name}\t[${student.scores.join(', ')}]\t${avg}`);
+    });
+    console.log("------------------------------------------------------------------\n");
+}
+
+// 3. Function to Calculate Average Score for a Specific Student
+function calculateSpecificAverage() {
+    console.log("\n--- Calculate Student Average ---");
+    const targetId = Number(readline.question("Enter student ID: "));
+    const student = students.find(s => s.id === targetId);
+
+    if (!student) {
+        console.log(`Error: Student with ID ${targetId} was not found.`);
+    } else {
+        const avg = getAverage(student.scores);
+        console.log(`${student.name}'s average score: ${avg}`);
+    }
+}
+
+// Main Menu Loop
+function mainMenu() {
+    let running = true;
+
+    while (running) {
+        console.log("\nSTUDENT RECORD SYSTEM MENU");
+        console.log("================================");
+        console.log("1. Add student");
+        console.log("2. Display all students");
+        console.log("3. Calculate average score");
+        console.log("4. Quit");
+
+        const choice = readline.question("Enter your choice (1-4): ").trim();
+
+        switch (choice) {
+            case '1':
+                addStudent();
+                break;
+            case '2':
+                displayAllStudents();
+                break;
+            case '3':
+                calculateSpecificAverage();
+                break;
+            case '4':
+                console.log("Exiting program. Goodbye!");
+                running = false;
+                break;
+            default:
+                console.log("Invalid option! Please enter a number between 1 and 4.");
+        }
+    }
+}
+
+// Start the program
+mainMenu(); 
